@@ -42,5 +42,19 @@ namespace CMap_Timesheets
                 }
             }
         }
+
+        public void AddRowToDataTable(DataTable dataTable, DataGridView dataGridView)
+        {
+            DataGridViewCellCollection cells = dataGridView.Rows[0].Cells;
+
+            DataRow newRow = dataTable.NewRow();
+            foreach (DataGridViewColumn col in dataGridView.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible == true))
+            {
+                newRow[col.Name] = cells[col.Name].FormattedValue;
+            }
+
+            dataTable.Rows.Add(newRow);
+        }
+
     }
 }

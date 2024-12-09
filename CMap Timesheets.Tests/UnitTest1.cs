@@ -1,4 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿///
+/// https://github.com/DaveCameron33/CMap-Timesheets
+/// 
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data;
 using System.Windows.Forms;
@@ -54,17 +58,5 @@ namespace CMap_Timesheets.Tests
 
     class Form1_Test: Form1
     {
-        public void AddRowToDataTable(DataTable dataTable, DataGridView dataGridView)
-        {
-            DataGridViewCellCollection cells = dataGridView.Rows[0].Cells;
-
-            DataRow newRow = dataTable.NewRow();
-            foreach (DataGridViewColumn col in dataGridView.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible == true))
-            {
-                newRow[col.Name] = cells[col.Name].FormattedValue;
-            }
-
-            dataTable.Rows.Add(newRow);
-        }
     }
 }
