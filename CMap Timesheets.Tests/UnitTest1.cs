@@ -37,26 +37,42 @@ namespace CMap_Timesheets.Tests
             dtTimesheetEntries.Columns.Add("colHours", typeof(decimal));
             dtTimesheetEntries.Columns.Add("colTotalHours", typeof(decimal));
 
+            form1 = new Form1_Test();
+
         }
 
         [TestMethod]
         public void DataIsAddedToDataTable()
         {
             /// Arrange
-            form1 = new Form1_Test();
-
             dgvEntry_Test.Rows.Add("Dave", "06/12/2024", "My First Project", "Setting up for the first time", 1d);
 
             /// Act
-            form1.AddRowToDataTable(dtTimesheetEntries, dgvEntry_Test);
+            form1.AddRowToDataTable(dtTimesheetEntries, ref dgvEntry_Test);
 
             /// Assert
-            Assert.IsTrue(dtTimesheetEntries.Rows.Count == 1);
+            Assert.IsTrue(dtTimesheetEntries.Rows.Count == 1);  //  Row was added
+            Assert.IsTrue(dgvEntry_Test.Rows.Count == 1);       //  Entered row was 'cleared from form'
 
         }
     }
 
     class Form1_Test: Form1
     {
+        public void AddRowToDataTable(DataTable dataTable, ref DataGridView dataGridView)
+        {
+            DataGridViewCellCollection cells = dataGridView.Rows[0].Cells;
+
+            DataRow newRow = dataTable.NewRow();
+            foreach (DataGridViewColumn col in dataGridView.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible == true))
+            {
+                newRow[col.Name] = cells[col.Name].FormattedValue;
+            }
+
+            dataTable.Rows.Add(newRow);
+
+            dataGridView.Rows.Clear();
+ 
+        }
     }
 }
