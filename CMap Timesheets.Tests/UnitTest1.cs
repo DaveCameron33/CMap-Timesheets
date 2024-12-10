@@ -72,23 +72,38 @@ namespace CMap_Timesheets.Tests
             Assert.IsTrue((decimal)dtTimesheetEntries.Select().Last()["colTotalHours"] == 1);  //  Row was added
 
         }
+
+        [TestMethod]
+        public void ComputeTotalHoursUpdatesHoursForMultipleEntries()
+        {
+
+            /// Arrange
+            /// Adding these direct to the DataTable - the AddRowToDataTable method has been proven to work
+            dtTimesheetEntries.Rows.Add("Dave", "06/12/2024", "My First Project", "Setting up for the first time", 1);
+            dtTimesheetEntries.Rows.Add("Dave", "06/12/2024", "My First Project", "done some more work", 3);
+            dtTimesheetEntries.Rows.Add("Daniel", "06/12/2024", "My First Project", "Someone else's hours", 6);
+            dtTimesheetEntries.Rows.Add("Dave", "09/12/2024", "My First Project", "Bit more work", 2.5);
+            dtTimesheetEntries.Rows.Add("Dave", "09/12/2024", "My Second Project", "Something else", 5);
+
+            /// Act
+            DataView dataView = new DataView(dtTimesheetEntries);
+            foreach (DataRow dataRow in dataView.ToTable(true, "colUser", "colDate").Rows)
+            {
+                form1.ComputeTotalHours(dtTimesheetEntries, dataRow["colUser"].ToString(), dataRow["colDate"].ToString());
+            }
+
+
+            /// Assert
+            Assert.AreEqual(4.0m, dtTimesheetEntries.Rows[0]["colTotalHours"]);  //  Row(s) 0+1 : 1+3=4
+            Assert.AreEqual(4.0m, dtTimesheetEntries.Rows[1]["colTotalHours"]);  //  Row(s) 0+1 : 1+3=4
+            Assert.AreEqual(6.0m, dtTimesheetEntries.Rows[2]["colTotalHours"]);  //  Row(s) 2   : 6
+            Assert.AreEqual(7.5m, dtTimesheetEntries.Rows[3]["colTotalHours"]);  //  Row(s) 3+4 : 2.5+5=7.5
+            Assert.AreEqual(7.5m, dtTimesheetEntries.Rows[4]["colTotalHours"]);  //  Row(s) 3+4 : 2.5+5=7.5
+
+        }
     }
 
     class Form1_Test : Form1
     {
-        public void ComputeTotalHours(DataTable dataTable, string userName, string workDate)
-        {
-            string filter = $"colUser='{userName}' AND colDate='{workDate}'";
-
-            //  Compute the sum of hours for this user/date
-            var sum = dataTable.Compute($"SUM(colHours)", filter);
-
-            //  Update the relevant row(s) in the Table 
-            foreach (DataRow dataRow in dataTable.Select(filter))
-            {
-                dataRow["colTotalHours"] = sum;
-            }
-
-        }
     }
 }

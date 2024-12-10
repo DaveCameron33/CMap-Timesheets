@@ -59,5 +59,18 @@ namespace CMap_Timesheets
 
         }
 
+        public void ComputeTotalHours(DataTable dataTable, string userName, string workDate)
+        {
+            string filter = $"colUser='{userName}' AND colDate='{workDate}'";
+
+            //  Compute the sum of hours for this user/date
+            var sum = dataTable.Compute($"SUM(colHours)", filter);
+
+            //  Update the relevant row(s) in the Table 
+            foreach (DataRow dataRow in dataTable.Select(filter))
+            {
+                dataRow["colTotalHours"] = sum;
+            }
+        }
     }
 }
