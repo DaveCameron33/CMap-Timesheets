@@ -41,6 +41,9 @@ namespace CMap_Timesheets
                     dgvAllEntries.Columns[col.Name].Width = col.Width;
                 }
             }
+
+            dgvEntry.Rows.Add();    //  Empty Row for first entry
+
         }
 
         public void AddRowToDataTable(DataTable dataTable, ref DataGridView dataGridView)
@@ -70,6 +73,66 @@ namespace CMap_Timesheets
             foreach (DataRow dataRow in dataTable.Select(filter))
             {
                 dataRow["colTotalHours"] = sum;
+            }
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            
+            /// Make sure entry is complete
+            foreach (DataGridViewCell cell in dgvEntry.Rows[0].Cells)
+            {
+                if (cell.Visible == true && string.IsNullOrEmpty("" + cell.Value))
+                {
+                    cell.Selected = true;
+                    return;
+                }
+            }
+
+            /// Send DataGridViewRow to DataTable
+            AddRowToDataTable(dtTimesheetEntries, ref dgvEntry);
+
+            /// Compute Total Hours related to THIS entry
+            DataRow dataRow = dtTimesheetEntries.Select().Last();
+            ComputeTotalHours(dtTimesheetEntries, dataRow["colUser"].ToString(), dataRow["colDate"].ToString());
+
+            /// Add new, empty Row
+            dgvEntry.Rows.Add();
+
+            /// Set focus on first Cell
+            dgvEntry.Select();
+
+        }
+
+        private void dgvEntry_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+
+            var cellContents = dgvEntry.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+            switch (dgvEntry.Columns[e.ColumnIndex].Name)
+            {
+                case "colDate":
+                    /// if colDate then reformat as Date
+                    DateTime date;
+                    DateTime.TryParse(cellContents.FormattedValue.ToString(),out date);
+                    if (date.ToString() == "01/01/0001 00:00:00")
+                    {
+                        cellContents.Value = ""; 
+                    }
+                    else
+                    {
+                        cellContents.Value = DateTime.Parse(cellContents.FormattedValue.ToString()).ToShortDateString();
+                    }
+                    break;
+                case "colHours":
+                    /// if colHours is not positive number then clear it
+                 decimal hours;
+                    decimal.TryParse(cellContents.Value.ToString(), out hours);
+                    if (hours <= 0)
+                    {
+                        cellContents.Value = "";
+                    }
+                    break;
             }
         }
     }

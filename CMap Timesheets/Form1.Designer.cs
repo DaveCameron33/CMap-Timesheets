@@ -34,16 +34,16 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.grpEntry = new System.Windows.Forms.GroupBox();
             this.dgvEntry = new System.Windows.Forms.DataGridView();
-            this.btnAdd = new System.Windows.Forms.Button();
             this.colUser = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colProject = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colHours = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTotalHours = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.grpButtons = new System.Windows.Forms.GroupBox();
-            this.btnExport = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
             this.grpEntries = new System.Windows.Forms.GroupBox();
             this.dgvAllEntries = new System.Windows.Forms.DataGridView();
             this.grpEntry.SuspendLayout();
@@ -106,17 +106,7 @@
             this.dgvEntry.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvEntry.Size = new System.Drawing.Size(1024, 91);
             this.dgvEntry.TabIndex = 1;
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnAdd.Location = new System.Drawing.Point(1039, 34);
-            this.btnAdd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(100, 91);
-            this.btnAdd.TabIndex = 2;
-            this.btnAdd.Text = "Add";
-            this.btnAdd.UseVisualStyleBackColor = true;
+            this.dgvEntry.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEntry_CellValidated);
             // 
             // colUser
             // 
@@ -156,6 +146,18 @@
             this.colTotalHours.Name = "colTotalHours";
             this.colTotalHours.Visible = false;
             // 
+            // btnAdd
+            // 
+            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnAdd.Location = new System.Drawing.Point(1039, 34);
+            this.btnAdd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(100, 91);
+            this.btnAdd.TabIndex = 2;
+            this.btnAdd.Text = "Add";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
             // grpButtons
             // 
             this.grpButtons.Controls.Add(this.btnExit);
@@ -167,17 +169,6 @@
             this.grpButtons.TabIndex = 11;
             this.grpButtons.TabStop = false;
             // 
-            // btnExport
-            // 
-            this.btnExport.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnExport.Location = new System.Drawing.Point(3, 22);
-            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(90, 56);
-            this.btnExport.TabIndex = 10;
-            this.btnExport.Text = "Export to CSV";
-            this.btnExport.UseVisualStyleBackColor = true;
-            // 
             // btnExit
             // 
             this.btnExit.Dock = System.Windows.Forms.DockStyle.Right;
@@ -188,6 +179,17 @@
             this.btnExit.TabIndex = 11;
             this.btnExit.Text = "Exit";
             this.btnExit.UseVisualStyleBackColor = true;
+            // 
+            // btnExport
+            // 
+            this.btnExport.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnExport.Location = new System.Drawing.Point(3, 22);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(90, 56);
+            this.btnExport.TabIndex = 10;
+            this.btnExport.Text = "Export to CSV";
+            this.btnExport.UseVisualStyleBackColor = true;
             // 
             // grpEntries
             // 
