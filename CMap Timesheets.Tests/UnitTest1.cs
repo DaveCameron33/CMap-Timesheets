@@ -8,6 +8,7 @@ using System.Data;
 using System.Windows.Forms;
 using System.Linq;
 using System.Collections.Generic;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace CMap_Timesheets.Tests
 {
@@ -38,7 +39,6 @@ namespace CMap_Timesheets.Tests
             dtTimesheetEntries.Columns.Add("colTotalHours", typeof(decimal));
 
             form1 = new Form1_Test();
-
         }
 
         [TestMethod]
@@ -55,24 +55,40 @@ namespace CMap_Timesheets.Tests
             Assert.IsTrue(dgvEntry_Test.Rows.Count == 1);       //  Entered row was 'cleared from form'
 
         }
+
+        [TestMethod]
+        public void ComputeTotalHoursUpdatesHours()
+        {
+
+            /// Arrange
+            dgvEntry_Test.Rows.Add("Dave", "06/12/2024", "My First Project", "Setting up for the first time", 1d);
+
+            /// Act
+            form1.AddRowToDataTable(dtTimesheetEntries, ref dgvEntry_Test);
+            form1.ComputeTotalHours(dtTimesheetEntries, "Dave", "06/12/2024");
+
+            /// Assert
+            Assert.IsTrue(dtTimesheetEntries.Rows.Count == 1);  //  Row was added
+            Assert.IsTrue((decimal)dtTimesheetEntries.Select().Last()["colTotalHours"] == 1);  //  Row was added
+
+        }
     }
 
-    class Form1_Test: Form1
+    class Form1_Test : Form1
     {
-        public void AddRowToDataTable(DataTable dataTable, ref DataGridView dataGridView)
+        public void ComputeTotalHours(DataTable dataTable, string userName, string workDate)
         {
-            DataGridViewCellCollection cells = dataGridView.Rows[0].Cells;
+            string filter = $"colUser='{userName}' AND colDate='{workDate}'";
 
-            DataRow newRow = dataTable.NewRow();
-            foreach (DataGridViewColumn col in dataGridView.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible == true))
+            //  Compute the sum of hours for this user/date
+            var sum = dataTable.Compute($"SUM(colHours)", filter);
+
+            //  Update the relevant row(s) in the Table 
+            foreach (DataRow dataRow in dataTable.Select(filter))
             {
-                newRow[col.Name] = cells[col.Name].FormattedValue;
+                dataRow["colTotalHours"] = sum;
             }
 
-            dataTable.Rows.Add(newRow);
-
-            dataGridView.Rows.Clear();
- 
         }
     }
 }

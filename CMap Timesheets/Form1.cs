@@ -43,7 +43,7 @@ namespace CMap_Timesheets
             }
         }
 
-        public void AddRowToDataTable(DataTable dataTable, DataGridView dataGridView)
+        public void AddRowToDataTable(DataTable dataTable, ref DataGridView dataGridView)
         {
             DataGridViewCellCollection cells = dataGridView.Rows[0].Cells;
 
@@ -54,6 +54,9 @@ namespace CMap_Timesheets
             }
 
             dataTable.Rows.Add(newRow);
+
+            dataGridView.Rows.Clear();
+
         }
 
     }
