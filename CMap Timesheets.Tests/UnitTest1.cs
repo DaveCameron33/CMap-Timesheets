@@ -134,24 +134,5 @@ namespace CMap_Timesheets.Tests
 
     class Form1_Test : Form1
     {
-        public (String, int) ExportToCSVString(DataTable dataTable, DataGridViewColumnCollection dataGridViewColumns)
-        {
-
-            int lines = 0;
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine(
-                "\"" + string.Join("\",\"", dataGridViewColumns.Cast<DataGridViewColumn>().Select(c => c.HeaderText)) + "\"");
-            
-            lines++;
-
-            foreach (DataRow dataRow in dataTable.Rows)
-            {
-                stringBuilder.AppendLine("\"" + string.Join("\",\"", dataRow.ItemArray) + "\"");
-                lines++;
-            }
-
-            return (stringBuilder.ToString(), lines);
-
-        }
     }
 }

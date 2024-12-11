@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -134,6 +135,54 @@ namespace CMap_Timesheets
                     }
                     break;
             }
+        }
+
+        public (String, int) ExportToCSVString(DataTable dataTable, DataGridViewColumnCollection dataGridViewColumns)
+        {
+
+            int lines = 0;
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine(
+                "\"" + string.Join("\",\"", dataGridViewColumns.Cast<DataGridViewColumn>().Select(c => c.HeaderText)) + "\"");
+
+            lines++;
+
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                stringBuilder.AppendLine("\"" + string.Join("\",\"", dataRow.ItemArray) + "\"");
+                lines++;
+            }
+
+            return (stringBuilder.ToString(), lines);
+
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            (string csvString, int rows) = ExportToCSVString(dtTimesheetEntries, dgvAllEntries.Columns);
+            bool abort;
+
+            if (rows <= 1)
+            {
+                if (MessageBox.Show(
+                    "Table contains no Timesheet data. Only Header will be exported.\n\nContinue?",
+                    "Exporting Timesheet Data",
+                    MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return;
+                };
+            }
+ 
+            string fileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), $"Timesheets{DateTime.Now.ToString("yyyyMMddHHmmss")}.csv");
+            using (StreamWriter writer = new StreamWriter(fileName,false))
+            {
+                writer.Write(csvString);
+            }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
